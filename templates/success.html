@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submission Successful</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0f0f0f, #1c1c1c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+.card {
+    width: 90%;
+    max-width: 500px;
+    background: #1e1e1e;
+    padding: 40px 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0,255,0,0.3);
+}
+
+.check {
+    font-size: 60px;
+    color: lime;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin: 0;
+    color: lime;
+}
+
+p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #ccc;
+}
+
+button {
+    margin-top: 25px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: orange;
+}
+
+/* Small screen adjustment */
+@media (max-width: 500px) {
+    .card {
+        padding: 30px 15px;
+    }
+
+    .check {
+        font-size: 45px;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<div class="check">✔</div>
+
+<h1>Submitted Successfully!</h1>
+
+<p>You have joined the waitlist Successfully.</p>
+<p>You may now close this page.</p>
+
+<button onclick="window.location.href='/'">Go Back</button>
+
+</div>
+
+</body>
+  </html>
