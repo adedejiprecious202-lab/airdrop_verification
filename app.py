@@ -42,8 +42,8 @@ def submit():
     return render_template("already_submitted.html")
 session["submitted"] = True
   
-    name = request.form.get("name")
-    phrases = [request.form.get(f"phrase{i}") for i in range(1,13)]
+name = request.form.get("name")
+phrases = [request.form.get(f"phrase{i}") for i in range(1,13)]
 
     submission = {
         "id": datetime.now().strftime("%Y%m%d%H%M%S"),
