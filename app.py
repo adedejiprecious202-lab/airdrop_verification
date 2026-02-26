@@ -1,16 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey1234"  # Change this
+app.secret_key = "supersecretkey23"  # Change this
 
 # ---------------- SETTINGS ----------------
-ADMIN_PASSWORD = "myopueh"
+ADMIN_PASSWORD = "mypord"  # Change this
 submissions = []
 
 # ---------------- ROUTES ----------------
 @app.route("/")
 def test():
-    # Just render test.html, no expiry check server-side
     return render_template("test.html")
 
 @app.route("/submit", methods=["POST"])
@@ -32,14 +31,15 @@ def submit():
 # ---------------- ADMIN LOGIN ----------------
 @app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
+    error_message = None
     if request.method == "POST":
         password = request.form.get("password")
         if password == ADMIN_PASSWORD:
             session["admin"] = True
             return redirect(url_for("admin_panel"))
         else:
-            return "Incorrect password", 401
-    return render_template("login.html")
+            error_message = "Incorrect password"
+    return render_template("login.html", error=error_message)
 
 @app.route("/admin")
 def admin_panel():
