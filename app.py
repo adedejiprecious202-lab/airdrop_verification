@@ -4,74 +4,66 @@ import uuid
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.secret_key = "opueh224"
+app.secret_key = "opueh334"
 
 DATABASE = "database.db"
 
-ADMIN_USERNAME = "adminpresh"
+ADMIN_USERNAME = "adminopueh"
 ADMIN_PASSWORD = "1243"
 
-
-# ---------------- DATABASE ---------------- #
+# ------------------ DATABASE ------------------ #
 
 def init_db():
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
 
-    c.execute(
-        "CREATE TABLE IF NOT EXISTS submissions ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "name TEXT,"
-        "phrase1 TEXT, phrase2 TEXT, phrase3 TEXT, phrase4 TEXT,"
-        "phrase5 TEXT, phrase6 TEXT, phrase7 TEXT, phrase8 TEXT,"
-        "phrase9 TEXT, phrase10 TEXT, phrase11 TEXT, phrase12 TEXT)"
-    )
+    c.execute("CREATE TABLE IF NOT EXISTS submissions ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "name TEXT,"
+              "phrase1 TEXT, phrase2 TEXT, phrase3 TEXT, phrase4 TEXT,"
+              "phrase5 TEXT, phrase6 TEXT, phrase7 TEXT, phrase8 TEXT,"
+              "phrase9 TEXT, phrase10 TEXT, phrase11 TEXT, phrase12 TEXT)")
 
-    c.execute(
-        "CREATE TABLE IF NOT EXISTS tokens ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "token TEXT,"
-        "expiry TEXT)"
-    )
+    c.execute("CREATE TABLE IF NOT EXISTS tokens ("
+              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+              "token TEXT,"
+              "expiry TEXT)")
 
     conn.commit()
     conn.close()
 
-
 init_db()
 
-
-# ---------------- HOME ---------------- #
+# ------------------ HOME ------------------ #
 
 @app.route("/")
 def home():
     return redirect(url_for("login"))
 
-
-# ---------------- LOGIN ---------------- #
+# ------------------ LOGIN ------------------ #
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form["username"]
+        password = request.form["password"]
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["admin"] = True
-            return redirect(url_for("admin"))
+            return redirect(url_for("generate"))  # GO TO TEST GENERATOR
         else:
             return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
 
+# ------------------ LOGOUT ------------------ #
 
 @app.route("/logout")
 def logout():
     session.pop("admin", None)
     return redirect(url_for("login"))
 
-
-# ---------------- GENERATE LINK ---------------- #
+# ------------------ GENERATE TEST LINK ------------------ #
 
 @app.route("/generate")
 def generate():
@@ -79,19 +71,26 @@ def generate():
         return redirect(url_for("login"))
 
     token = str(uuid.uuid4())
-    expiry_time = datetime.now() + timedelta(hours=1)
+    expiry = datetime.now() + timedelta(hours=1)
 
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
     c.execute("INSERT INTO tokens (token, expiry) VALUES (?, ?)",
-              (token, expiry_time.strftime("%Y-%m-%d %H:%M:%S")))
+              (token, expiry.strftime("%Y-%m-%d %H:%M:%S")))
     conn.commit()
     conn.close()
 
-    return "Send this link: /cbt/" + token
+    full_link = request.host_url + "cbt/" + token
 
+    return f"""
+    <h2>Test Link Generated ✅</h2>
+    <p>Send this link:</p>
+    <a href="{full_link}">{full_link}</a>
+    <br><br>
+    <a href="/logout">Logout</a>
+    """
 
-# ---------------- CBT PAGE ---------------- #
+# ------------------ CBT PAGE ------------------ #
 
 @app.route("/cbt/<token>", methods=["GET", "POST"])
 def cbt(token):
@@ -110,17 +109,13 @@ def cbt(token):
         return render_template("expired.html")
 
     if request.method == "POST":
-        name = request.form.get("name")
-        phrases = [request.form.get(f"phrase{i}") for i in range(1, 13)]
+        name = request.form["name"]
+        phrases = [request.form.get("phrase" + str(i)) for i in range(1, 13)]
 
         conn = sqlite3.connect(DATABASE)
         c = conn.cursor()
-        c.execute(
-            "INSERT INTO submissions (name, phrase1, phrase2, phrase3, phrase4,"
-            "phrase5, phrase6, phrase7, phrase8, phrase9, phrase10, phrase11, phrase12)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (name, *phrases)
-        )
+        c.execute("INSERT INTO submissions VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                  (name, *phrases))
         conn.commit()
         conn.close()
 
@@ -129,8 +124,7 @@ def cbt(token):
     remaining = int((expiry_time - datetime.now()).total_seconds())
     return render_template("cbt.html", remaining=remaining)
 
-
-# ---------------- ADMIN DASHBOARD ---------------- #
+# ------------------ ADMIN DASHBOARD ------------------ #
 
 @app.route("/admin")
 def admin():
@@ -145,6 +139,7 @@ def admin():
 
     return render_template("admin.html", data=data)
 
+# ------------------ DELETE PHRASE ------------------ #
 
 @app.route("/delete/<int:id>/<int:phrase_no>")
 def delete_phrase(id, phrase_no):
@@ -153,12 +148,13 @@ def delete_phrase(id, phrase_no):
 
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
-    c.execute(f"UPDATE submissions SET phrase{phrase_no}='' WHERE id=?", (id,))
+    c.execute("UPDATE submissions SET phrase" + str(phrase_no) + "='' WHERE id=?", (id,))
     conn.commit()
     conn.close()
 
     return redirect(url_for("admin"))
 
+# ------------------ RUN ------------------ #
 
 if __name__ == "__main__":
     app.run(debug=True)
