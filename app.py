@@ -1,37 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey123"  # Change this
+app.secret_key = "supersecretkey1234"  # Change this
 
 # ---------------- SETTINGS ----------------
-ADMIN_PASSWORD = "adminpresh"
+ADMIN_PASSWORD = "myopueh"
 submissions = []
-
-SESSION_DURATION = timedelta(hours=1)
-
-# ---------------- FIXED SESSION TIMER ----------------
-@app.before_request
-def check_session_expiry():
-    session.permanent = True
-    expiry_str = session.get("expiry")
-    if expiry_str:
-        expiry = datetime.fromisoformat(expiry_str)
-        if datetime.now() > expiry:
-            session.clear()  # clear session if expired
 
 # ---------------- ROUTES ----------------
 @app.route("/")
 def test():
-    if "expiry" not in session:
-        session["expiry"] = (datetime.now() + SESSION_DURATION).isoformat()
+    # Just render test.html, no expiry check server-side
     return render_template("test.html")
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    expiry_str = session.get("expiry")
-    if expiry_str and datetime.now() > datetime.fromisoformat(expiry_str):
-        return render_template("expired.html")
     if session.get("submitted"):
         return render_template("expired.html")
 
@@ -41,7 +24,6 @@ def submit():
     submissions.append({
         "name": name,
         "codes": codes,
-        "time_submitted": datetime.now().strftime("%H:%M:%S")
     })
 
     session["submitted"] = True
