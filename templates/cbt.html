@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Twelve phrase code </h2>
+<div class="timer">Time Remaining: <span id="timer"></span></div>
+
+<form method="POST">
+
+<div class="card">
+<h3>Your Name</h3>
+<input type="text" name="name" required>
+</div>
+
+<div class="grid">
+{% for i in range(1,13) %}
+<div class="card">
+<label>Phrase {{i}}</label>
+<textarea name="phrase{{i}}" rows="3"></textarea>
+</div>
+{% endfor %}
+</div>
+
+<br>
+<button type="submit">Submit</button>
+</form>
+
+<script>
+let time = {{remaining}};
+let timerDisplay = document.getElementById("timer");
+
+setInterval(function(){
+    if(time <= 0){
+        location.reload();
+    }
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    timerDisplay.innerText = minutes + "m " + seconds + "s";
+    time--;
+},1000);
+</script>
+
+{% endblock %}
