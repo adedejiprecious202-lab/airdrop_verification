@@ -1,35 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</title>Link Expired</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0b0b0b;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-.card {
-    background: linear-gradient(180deg, #8b0000, #ff0000);
-    padding: 30px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 600px;
-    text-align: center;
-    color: #fff;
-}
-h1 { font-size: 2em; margin-bottom: 20px; }
-p { font-size: 18px; }
-</style>
-</head>
-<body>
-<div class="card">
-<h1>Time’s Up!</h1>
-<p>Your verification link has expired.</p>
-</div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h2>Link Expired ❌</h2>
+<p>This link has expired.</p>
+{% endblock %}
