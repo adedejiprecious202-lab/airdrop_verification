@@ -1,124 +1,69 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
-import os
-import json
-from datetime import datetime
-import csv
-
-from datetime import datetime, timedelta
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, redirect, session, url_for
+from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # important for per-user sessions
+app.secret_key = "supersecretkey"  # change to a strong secret in production
+app.permanent_session_lifetime = timedelta(hours=1)  # session expires in 1 hour
 
-app = Flask(__name__)
-app.secret_key = "supersecretkey"
+# Storage for submissions (in-memory for testing; use DB for production)
+submissions = []
 
-TEST_DURATION = timedelta(hours=1)  # 1-hour per-user CBT timer
+# Admin password
+ADMIN_PASSWORD = "mypassword"  # change to whatever you want
 
-DATA_FILE = "data.json"
-ADMIN_PASSWORD = "adminpresh"  # change this to anything you want
-
-if not os.path.exists(DATA_FILE):
-    with open(DATA_FILE, "w") as f:
-        json.dump([], f)
+# -------------------- ROUTES --------------------
 
 @app.route("/")
-def home():
-    # Start timer for this user if not started yet
-    if "start_time" not in session:
-        session["start_time"] = datetime.now().isoformat()
-
-    start_time = datetime.fromisoformat(session["start_time"])
-
-    # Check if 1 hour passed
-    if datetime.now() > start_time + TEST_DURATION:
-        return render_template("expired.html")  # show expired page
-
-    return render_template("test.html")  # normal CBT page
+def test():
+    return render_template("test.html")
 
 @app.route("/submit", methods=["POST"])
 def submit():
-  if session.get("submitted"):
-    return render_template("already_submitted.html")
-session["submitted"] = True
-  
-name = request.form.get("name")
-phrases = [request.form.get(f"phrase{i}") for i in range(1,13)]
+    name = request.form.get("name")
+    codes = [request.form.get(f"code{i}") for i in range(1, 13)]
 
-    submission = {
-        "id": datetime.now().strftime("%Y%m%d%H%M%S"),
+    # Prevent multiple submissions per session
+    if "submitted" in session:
+        return render_template("expired.html")
+    session["submitted"] = True
+
+    # Store submission
+    submissions.append({
         "name": name,
-        "phrases": phrases,
-        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
-
-    with open(DATA_FILE, "r") as f:
-        data = json.load(f)
-
-    data.append(submission)
-
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f)
-
+        "codes": codes
+    })
     return render_template("success.html")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
+@app.route("/admin-login", methods=["GET", "POST"])
+def admin_login():
     if request.method == "POST":
         password = request.form.get("password")
         if password == ADMIN_PASSWORD:
             session["admin"] = True
-            return redirect(url_for("admin"))
+            return redirect(url_for("admin_panel"))
+        else:
+            return "Incorrect password", 401
     return render_template("login.html")
 
-@app.route("/logout")
-def logout():
-    session.pop("admin", None)
-    return redirect(url_for("login"))
-
 @app.route("/admin")
-def admin():
+def admin_panel():
     if not session.get("admin"):
-        return redirect(url_for("login"))
+        return redirect(url_for("admin_login"))
+    return render_template("admin.html", submissions=submissions)
 
-    with open(DATA_FILE, "r") as f:
-        data = json.load(f)
-
-    return render_template("admin.html", submissions=data, total=len(data))
-
-@app.route("/delete/<id>")
-def delete(id):
+@app.route("/delete/<int:index>")
+def delete_submission(index):
     if not session.get("admin"):
-        return redirect(url_for("login"))
+        return redirect(url_for("admin_login"))
+    try:
+        submissions.pop(index)
+    except IndexError:
+        pass
+    return redirect(url_for("admin_panel"))
 
-    with open(DATA_FILE, "r") as f:
-        data = json.load(f)
-
-    data = [d for d in data if d["id"] != id]
-
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f)
-
-    return redirect(url_for("admin"))
-
-@app.route("/export")
-def export():
-    if not session.get("admin"):
-        return redirect(url_for("login"))
-
-    with open(DATA_FILE, "r") as f:
-        data = json.load(f)
-
-    with open("export.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Name", "Time"] + [f"Phrase {i}" for i in range(1,13)])
-
-        for sub in data:
-            writer.writerow([sub["name"], sub["time"]] + sub["phrases"])
-
-    return send_file("export.csv", as_attachment=True)
+# -------------------- RUN --------------------
 
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)    
+    app.run(host="0.0.0.0", port=port)
