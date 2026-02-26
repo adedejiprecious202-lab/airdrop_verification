@@ -143,7 +143,7 @@ def delete_phrase(id, phrase_no):
     conn.close()
     return redirect(url_for("admin"))
     @app.route("/")
-def home():
+    def home():
     return redirect(url_for("login"))
 if __name__ == "__main__
 app.run(debug=True)
