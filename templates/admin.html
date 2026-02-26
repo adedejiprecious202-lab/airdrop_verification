@@ -1,19 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
+
+<h2>Opueh Dashboard</h2>
 
 {% for row in data %}
 <div class="card">
-<h3>{{row[1]}}</h3>
 
-{% for i in range(2,14) %}
-<p><b>Phrase {{i-1}}:</b> {{row[i]}}
-<a href="/delete/{{row[0]}}/{{i-1}}">
-<button>Delete</button>
-</a>
-</p>
-{% endfor %}
+    <h3>{{ row[1] }}</h3>
+
+    <div class="grid">
+        {% for i in range(2,14) %}
+        <div>
+            <b>Phrase {{ i-1 }}:</b><br>
+            {{ row[i] }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <br>
+    <a href="/delete/{{ row[0] }}">
+        <button style="background:red;">Delete Submission</button>
+    </a>
+
 </div>
 {% endfor %}
+
+<br>
+<a href="/generate"><button>Back to Generate</button></a>
+<a href="/logout"><button>Logout</button></a>
 
 {% endblock %}
