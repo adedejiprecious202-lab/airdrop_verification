@@ -145,6 +145,5 @@ def delete_phrase(id, phrase_no):
     @app.route("/")
 def home():
     return redirect(url_for("login"))
-
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == "__main__
+app.run(debug=True)
